@@ -13,7 +13,6 @@ import org.bytedeco.opencv.opencv_core.Scalar;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,15 +24,15 @@ public class VideoReader {
     public VideoReader() throws IOException, ClassNotFoundException {
     }
 
-    public static void main(String[] args) throws Exception {
-        VideoReader vr = new VideoReader();
-//        vr.detect("C:\\Users\\Asus\\Desktop\\CDLE project data\\video1.mp4");
-        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace("C:\\Users\\Asus\\Desktop\\CDLE project data\\video1.mp4");
-        for(double[] emb : out.keySet()){
-            System.out.println(Arrays.toString(emb));
-        }
-
-    }
+//    public static void main(String[] args) throws Exception {
+//        VideoReader vr = new VideoReader();
+////        vr.detect("C:\\Users\\Asus\\Desktop\\CDLE project data\\video1.mp4");
+//        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace("C:\\Users\\Asus\\Desktop\\CDLE project data\\video1.mp4");
+//        for(double[] emb : out.keySet()){
+//            System.out.println(Arrays.toString(emb));
+//        }
+//
+//    }
 
     // for video testing
     public void detect(String videoPath) throws Exception{
@@ -61,7 +60,6 @@ public class VideoReader {
                 List<FaceLocalization> faceLocalizations = faceDetector.getFaceLocalization();
                 for (FaceLocalization loc: faceLocalizations){
                     INDArray emb = faceIdentifier.getEmbeddingFromPic(opencvMat,loc);
-                    System.out.println(emb);
                 }
             }
         }
@@ -92,12 +90,15 @@ public class VideoReader {
                 faceDetector.detectFaces(opencvMat);
                 List<FaceLocalization> faceLocalizations = faceDetector.getFaceLocalization();
                 for (FaceLocalization loc: faceLocalizations){
-                    INDArray emb = faceIdentifier.getEmbeddingFromPic(opencvMat,loc);
-                    double[] embDouble = emb.toDoubleVector();
+                    System.out.println(time);
                     int X = (int) loc.getLeft_x();
                     int Y = (int) loc.getLeft_y();
                     int Width = loc.getValidWidth(opencvMat.size().width());
                     int Height = loc.getValidHeight(opencvMat.size().height());
+                    System.out.println(X + "," + Y + "," + Width + "," + Height + "," );
+                    if(X < 0 || Y <0 || Width <=0 || Height <= 0){continue;}
+                    INDArray emb = faceIdentifier.getEmbeddingFromPic(opencvMat,loc);
+                    double[] embDouble = emb.toDoubleVector();
                     int[] loci = new int[]{X,Y,Width,Height};
 
 

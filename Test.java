@@ -12,7 +12,7 @@ public class Test {
         VideoReader vr = new VideoReader();
         DBScan dbScan = new DBScan();
         System.out.println("Start Encoding...");
-        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace("C:\\Users\\Asus\\Desktop\\CDLE project data\\video1.mp4");
+        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace("C:\\Users\\Asus\\Desktop\\CDLE project data\\video2.mp4");
         List<double[]> embs = new ArrayList<>(out.keySet());
         List<DoublePoint> points = new ArrayList<>();
         for( double[] emb: embs){
