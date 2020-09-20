@@ -2,7 +2,7 @@ package ai.certifai.solution.facial_recognition.video_reading;
 
 import ai.certifai.solution.facial_recognition.detection.FaceLocalization;
 import ai.certifai.solution.facial_recognition.detection.OpenCV_DeepLearningFaceDetector;
-import ai.certifai.solution.facial_recognition.identification.feature.RamokFaceNetFeatureProvider;
+import ai.certifai.solution.facial_recognition.identification.feature.VGG16FeatureProvider;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -32,7 +32,7 @@ public class VideoReader {
         for(double[] emb : out.keySet()){
             System.out.println(Arrays.toString(emb));
         }
-        
+
     }
 
     // for video testing
@@ -44,7 +44,7 @@ public class VideoReader {
         int height = grabber.getImageHeight();
 
         OpenCV_DeepLearningFaceDetector faceDetector = new OpenCV_DeepLearningFaceDetector(width,height,0.8);
-        RamokFaceNetFeatureProvider faceIdentifier = new RamokFaceNetFeatureProvider();
+        VGG16FeatureProvider faceIdentifier = new VGG16FeatureProvider();
 
         OpenCVFrameConverter.ToMat frame2Mat = new OpenCVFrameConverter.ToMat();
 
@@ -78,7 +78,7 @@ public class VideoReader {
         int height = grabber.getImageHeight();
 
         OpenCV_DeepLearningFaceDetector faceDetector = new OpenCV_DeepLearningFaceDetector(width,height,0.8);
-        RamokFaceNetFeatureProvider faceIdentifier = new RamokFaceNetFeatureProvider();
+        VGG16FeatureProvider faceIdentifier = new VGG16FeatureProvider();
 
         OpenCVFrameConverter.ToMat frame2Mat = new OpenCVFrameConverter.ToMat();
 
