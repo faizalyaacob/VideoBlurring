@@ -3,20 +3,21 @@ package ai.certifai.solution.facial_recognition.video_reading;
 import ai.certifai.solution.facial_recognition.detection.FaceLocalization;
 import ai.certifai.solution.facial_recognition.detection.OpenCV_DeepLearningFaceDetector;
 import ai.certifai.solution.facial_recognition.identification.feature.VGG16FeatureProvider;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
-import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_core.Point;
-import org.bytedeco.opencv.opencv_core.Rect;
-import org.bytedeco.opencv.opencv_core.Scalar;
+import org.bytedeco.opencv.opencv_core.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imwrite;
 import static org.bytedeco.opencv.global.opencv_imgproc.rectangle;
+import static org.bytedeco.opencv.global.opencv_imgproc.resize;
 
 public class VideoReader {
 
@@ -116,6 +117,77 @@ public class VideoReader {
         for (FaceLocalization i : faceLocalizations){
             rectangle(image,new Rect(new Point((int) i.getLeft_x(),(int) i.getLeft_y()), new Point((int) i.getRight_x(),(int) i.getRight_y())), new Scalar(0, 255, 0, 0),2,8,0);
         }
+    }
+
+    public HashMap<String,double[]> extractImageDetected(HashMap<DoublePoint,List<DoublePoint>> cluster, HashMap<double[], HashMap<Long,int[]>> timeLocs, String videoPath) throws Exception {
+        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath);
+        // HashMap<String name,>
+        grabber.setFormat("mp4");
+        grabber.start();
+        int width = grabber.getImageWidth();
+        int height = grabber.getImageHeight();
+        OpenCVFrameConverter.ToMat frame2Mat = new OpenCVFrameConverter.ToMat();
+        int nameIdx = 0;
+        for(DoublePoint emb: cluster.keySet()){
+            double[] pnt = emb.getPoint();
+            System.out.println(Arrays.toString(pnt));
+            if(timeLocs.get(pnt) == null){
+                for(double[] pnts : timeLocs.keySet()){
+                    System.out.println("The Points inside:");
+                    System.out.println(Arrays.toString(pnts));
+                }
+                System.out.println("null");
+            }
+            HashMap<Long, int[]> timeLoc = timeLocs.get(pnt);
+
+            int i = 0;
+            Long time = 0L;
+            for (Long timeStamp : timeLoc.keySet()){
+                if (i == 1){break;}
+                System.out.println(timeStamp);
+                time = timeStamp;
+                i++;
+            }
+            grabber.setTimestamp(time);
+            Frame frame = grabber.grabImage();
+            Mat image = frame2Mat.convert(frame);
+
+            int [] loc = timeLoc.get(time);
+            int X = loc[0];
+            int Y = loc[1];
+            int Width = loc[2];
+            int Height = loc[3];
+
+            // Crop face, Resize and convert into INDArray
+            Mat crop_image = new Mat(image, new Rect(X, Y, Width, Height));
+
+            //resize and save and name
+            Mat resizeImage = new Mat();
+            resize(crop_image, resizeImage, new Size(50,50));
+
+            String imagePath = "";
+            String imageName = "face-"+nameIdx;
+
+            imagePath = "C:\\Users\\Asus\\Desktop\\CDLE project data\\output\\"+imageName+".jpg";
+
+            imwrite(imagePath,resizeImage);
+
+            nameIdx++;
+        }
+
+       /* List<Long> timeToGrab = new ArrayList<>();
+        for(double[] i :timeLoc.keySet()){
+            for(Long s: timeLoc.get(i).keySet()){
+                timeToGrab.add(s);
+            }
+        }
+        int i = 0;
+
+        while(i<timeToGrab.size()){
+            grabber.setTimestamp(timeToGrab.get(i));
+            Frame frame = grabber.grabImage();
+        } */
+        return null;
     }
 
 }

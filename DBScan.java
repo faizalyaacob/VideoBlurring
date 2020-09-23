@@ -3,6 +3,7 @@ package ai.certifai.solution.facial_recognition.video_reading;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -16,9 +17,9 @@ public class DBScan {
     }
 
     // Get perform clustering
-    public List<Cluster<DoublePoint>> getClusters(List<DoublePoint> points, double eps, int minPts){
+    public List<Cluster<DoublePoint>> getClusters(List<DoublePoint> points, double eps, int minPts, DistanceMeasure method){
         final DBSCANClusterer<DoublePoint> transformer =
-                new DBSCANClusterer<>(eps, minPts, new CosineSim());
+                new DBSCANClusterer<>(eps, minPts, method);
         return transformer.cluster(points);
     }
 
