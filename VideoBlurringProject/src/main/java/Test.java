@@ -19,6 +19,12 @@ import static org.bytedeco.opencv.global.opencv_highgui.waitKey;
 
 public class Test {
     public static void main(String[] args) throws Exception {
+
+        System.out.println("------------------------------------");
+        System.out.println("----------BlurMe Beta v1.0----------");
+        System.out.println("\033[3m          We anonymize you          \033[0m");
+        System.out.println("------------------------------------");
+        //Deletes all previous images inside folder
         String imagePath = "E:\\Java Projects\\output";
         File folder = new File(imagePath);
         File[] files = folder.listFiles();
@@ -27,6 +33,8 @@ public class Test {
                 f.delete();
             }
         }
+
+        //Input: Vid directory Output: HashMap with key: Face Embeddings, Value: Hashmap of timestamp and bound box coordinates
         VideoReader vr = new VideoReader();
         DBScan dbScan = new DBScan();
         System.out.println("Start Encoding...");
@@ -38,7 +46,7 @@ public class Test {
             points.add( new DoublePoint(emb));
         }
         System.out.println("End Encoding...");
-        System.out.println("Start Clustering...");
+        System.out.println("\n\nStarted Clustering...");
         // pass video 2 short,video 1 short 2 scot, fail video3 0 output fast moving
         // fail on long vid 3 no faizal, pass long vid 1, video 2 no zufar
         List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.08,10, new EuclideanDistance());
@@ -50,13 +58,16 @@ public class Test {
 //        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.065,6, new CosineSim());// pass all!! better
         // pass video 3 2 peh, , pass video 2 2 zufar 2 sum, pass video1
 //        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.07,6, new CosineSim());
-        System.out.println("End Clustering");
+        System.out.println("End Clustering\n");
         HashMap<DoublePoint,List<DoublePoint>> map = dbScan.getRepresentationMap(clusters);
 //        for (DoublePoint pt : map.keySet()){
 //            System.out.println(pt.getPoint().length);
 //            System.out.println(pt);
 //        }
-        System.out.println("No.of Face Detected: "+map.keySet().size());
+
+        System.out.println("No.of Faces Detected: "+map.keySet().size());
+        System.out.println("The system will show the faces detected in a separate window.");
+        System.out.println("[IMPORTANT] Notice the face number. Eg: face-0");
         String saveloc = "E:\\Java Projects\\output\\";
 
         HashMap<String, double[]> detectedEmb = vr.extractImageDetected(map,out,path,saveloc);
@@ -75,15 +86,23 @@ public class Test {
 
         List<String> facelist = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Please select the face that you need...");
+        System.out.println("\n\n-----[IMPORTANT] Please select the face number that you need...-----");
         System.out.println(detectedEmb.keySet());
         String selection = sc.nextLine(); // User inputs either 1/2/3
         facelist.add("face-"+selection+".jpg");
+
+        //Extract
         List<double[]> getSelectedFaces = GetSelectedFaces.getSelectedFaces(detectedEmb,facelist);
+
+        //Get embeddings, time stamp and bounding box coordinates to blur unselected faces
         List<double[]> embToBlur = compare.compareImage(map, getSelectedFaces);
+
+        //Video blurring and video write (Output video: "/output.mp4")
         VideoBlurring vb = new VideoBlurring();
         HashMap<Long, List<int[]>> generateTimeLocs = vb.generateTimeLocs(embToBlur,out);
         vb.BlurringAndGenerateVideo(path,generateTimeLocs);
+
+        System.out.println("\n\n Blurring completed! Programme exiting...");
 
     }
 }
