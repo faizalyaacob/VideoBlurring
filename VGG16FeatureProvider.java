@@ -15,10 +15,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package ai.certifai.solution.facial_recognition.identification.feature;
+package ai.certifai.solution;
 
 import ai.certifai.solution.facial_recognition.detection.FaceLocalization;
 import ai.certifai.solution.facial_recognition.identification.Prediction;
+import ai.certifai.solution.facial_recognition.identification.feature.FaceFeatureProvider;
+import ai.certifai.solution.facial_recognition.identification.feature.LabelFeaturePair;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Rect;
 import org.bytedeco.opencv.opencv_core.Size;

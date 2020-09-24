@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.identification;
+package ai.certifai.solution;
 
 import org.apache.commons.math3.ml.clustering.DoublePoint;
 
@@ -10,11 +10,11 @@ import java.util.List;
 
 public class compare {
 
-    public List<double []> compareImage(HashMap<DoublePoint,List<DoublePoint>> embCluster, List<DoublePoint> notToBlur){
+    public static List<double []> compareImage(HashMap<DoublePoint,List<DoublePoint>> embCluster, List<double []> notToBlur){
         List<double []> embToBlur = new ArrayList<>();
 
         for (DoublePoint emb : embCluster.keySet()){
-            if(!notToBlur.contains(emb)){
+            if(!notToBlur.contains(emb.getPoint())){
                 for(DoublePoint face: embCluster.get(emb)){
                     double[] faceDouble = face.getPoint();
                     embToBlur.add(faceDouble);
@@ -28,7 +28,7 @@ public class compare {
     public static void main(String[] args){
 
         HashMap<DoublePoint,List<DoublePoint>> embCluster = new HashMap<>();
-        List<DoublePoint> notToBlur = new ArrayList<>();
+        List<double[]> notToBlur = new ArrayList<>();
 
         double[] pnt1 = new double[]{1.0,1.0,1.0};
         double[] pnt2 = new double[]{2.0,2.0,2.0};
@@ -44,8 +44,8 @@ public class compare {
         embCluster.put(d1,l1);
         embCluster.put(d2,l2);
 
-//        notToBlur.add(d1);
-//        notToBlur.add(d2);
+//        notToBlur.add(pnt1);
+//        notToBlur.add(pnt2);
 
         compare cp = new compare();
         List<double[]> faceToBlur = cp.compareImage(embCluster,notToBlur);

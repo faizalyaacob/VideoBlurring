@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.video_reading;
+package ai.certifai.solution;
 
 import ai.certifai.solution.facial_recognition.detection.FaceLocalization;
 import ai.certifai.solution.facial_recognition.detection.OpenCV_DeepLearningFaceDetector;
@@ -10,11 +10,14 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imwrite;
 import static org.bytedeco.opencv.global.opencv_imgproc.rectangle;
 import static org.bytedeco.opencv.global.opencv_imgproc.resize;
@@ -119,18 +122,19 @@ public class VideoReader {
         }
     }
 
-    public HashMap<String,double[]> extractImageDetected(HashMap<DoublePoint,List<DoublePoint>> cluster, HashMap<double[], HashMap<Long,int[]>> timeLocs, String videoPath) throws Exception {
+    public HashMap<String,double[]> extractImageDetected(HashMap<DoublePoint,List<DoublePoint>> cluster, HashMap<double[], HashMap<Long,int[]>> timeLocs, String videoPath,  String saveloc) throws Exception {
         FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoPath);
-        // HashMap<String name,>
         grabber.setFormat("mp4");
         grabber.start();
         int width = grabber.getImageWidth();
         int height = grabber.getImageHeight();
         OpenCVFrameConverter.ToMat frame2Mat = new OpenCVFrameConverter.ToMat();
+        HashMap<String, double[]> labelledEmbs = new HashMap<>();
         int nameIdx = 0;
         for(DoublePoint emb: cluster.keySet()){
             double[] pnt = emb.getPoint();
             System.out.println(Arrays.toString(pnt));
+            //System.out.println(pnt.length); //there are 2622 vectors within one face embedding
             if(timeLocs.get(pnt) == null){
                 for(double[] pnts : timeLocs.keySet()){
                     System.out.println("The Points inside:");
@@ -168,11 +172,17 @@ public class VideoReader {
             String imagePath = "";
             String imageName = "face-"+nameIdx;
 
-            imagePath = "C:\\Users\\Asus\\Desktop\\CDLE project data\\output\\"+imageName+".jpg";
+//            imagePath = "E:\\Java Projects\\output\\"+imageName+".jpg";
+            imagePath = saveloc + imageName + ".jpg";
 
             imwrite(imagePath,resizeImage);
 
+
             nameIdx++;
+
+            labelledEmbs.put(imageName, pnt);
+
+
         }
 
        /* List<Long> timeToGrab = new ArrayList<>();
@@ -187,7 +197,7 @@ public class VideoReader {
             grabber.setTimestamp(timeToGrab.get(i));
             Frame frame = grabber.grabImage();
         } */
-        return null;
+        return labelledEmbs;
     }
 
 }

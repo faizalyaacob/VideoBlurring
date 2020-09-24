@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.identification;
+package ai.certifai.solution;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

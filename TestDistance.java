@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.video_reading;
+package ai.certifai.solution;
 
 import ai.certifai.solution.facial_recognition.identification.feature.VGG16FeatureProvider;
 import org.datavec.image.loader.NativeImageLoader;

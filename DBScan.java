@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.video_reading;
+package ai.certifai.solution;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;

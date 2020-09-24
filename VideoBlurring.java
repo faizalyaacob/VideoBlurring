@@ -1,4 +1,4 @@
-package ai.certifai.solution.facial_recognition.video_reading;
+package ai.certifai.solution;
 
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -21,7 +21,7 @@ public class VideoBlurring {
     }
 
     public static void main(String[] args) throws Exception {
-        String vidPath = "C:\\Users\\Asus\\Desktop\\CDLE project data\\video1_Trim.mp4";
+        String vidPath = "C:\\Users\\scotg\\Downloads\\Video\\TestManyFace_Trim.mp4";
         VideoReader capture = new VideoReader();
         VideoBlurring blur = new VideoBlurring();
         HashMap<double[],HashMap<Long,int[]>> embTimeLoc = capture.detectAndEncodeFace(vidPath);
@@ -37,7 +37,7 @@ public class VideoBlurring {
     public HashMap<Long, List<int[]>> generateTimeLocs (List<double[]> faceToBlur, HashMap<double[], HashMap<Long, int[]>> embTimeLoc){
         HashMap<Long, List<int[]>> output= new HashMap<>();
         // should use double[] face: faceToBlur
-        for(double[] face: embTimeLoc.keySet()){
+        for(double[] face: faceToBlur){
             if(embTimeLoc.containsKey(face)){
                 HashMap<Long,int[]> timeloc = embTimeLoc.get(face);
                 for(long time: timeloc.keySet()){
