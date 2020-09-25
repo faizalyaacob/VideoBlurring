@@ -168,7 +168,7 @@ public class VideoReader {
             String imageName = "face-"+nameIdx;
 
 //            imagePath = "E:\\Java Projects\\output\\"+imageName+".jpg";
-            imagePath = saveloc + imageName + ".jpg";
+            imagePath = saveloc+ "\\" + imageName + ".jpg";
 
             imwrite(imagePath,resizeImage);
 

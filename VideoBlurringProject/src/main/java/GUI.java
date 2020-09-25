@@ -1,26 +1,33 @@
-import org.bytedeco.opencv.global.opencv_highgui;
-import org.bytedeco.opencv.opencv_core.Mat;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class GUI implements ActionListener {
 
     int count = 0;
-    JLabel label;
-    JFrame frame;
-    JPanel panel;
+    private static JLabel label;
+    private static JFrame frame;
+    private static JPanel panel;
+    private static String path;
+    private static File imageFolder;
+    private static String[] listOfFiles;
+    private static java.util.List<String> fileList;
+    private static HashMap<String,JCheckBox> boxToFile;
 
 
-    public GUI(){
-        String path = "C:\\Users\\Asus\\Desktop\\CDLE project data\\output\\";
-        File imageFolder = new File(path);
-        String[] listofFiles = imageFolder.list();
+    public static void askForFace(String imgFile){
+        fileList = new ArrayList<>();
+        boxToFile = new HashMap<>();
+        path = imgFile;
+        imageFolder = new File(path);
+        listOfFiles = imageFolder.list();
 
         frame = new JFrame();
         JButton button = new JButton("OK");
@@ -30,15 +37,23 @@ public class GUI implements ActionListener {
         panel.add(new JLabel("PICK THE FACES NOT TO BLUR"));
         panel.setLayout(new GridLayout(0,1));
 
-        ArrayList<JCheckBox> lists = new ArrayList<>();
-        for(String image: listofFiles){
+        for(String image: listOfFiles){
             String imageName = path + "\\" + image;
-            lists.add( new JCheckBox());
+            boxToFile.put(imageName,new JCheckBox());
             panel.add( new JLabel("face",new ImageIcon(imageName),SwingConstants.LEFT));
-            panel.add( lists.get(lists.size()-1));
+            panel.add( boxToFile.get(imageName));
         }
         panel.add(button);
-        button.addActionListener(this);
+        button.addActionListener(e -> {
+            for(String name: boxToFile.keySet()){
+                if(!boxToFile.get(name).isSelected()){
+                    File f = new File(name);
+                    f.delete();
+                }
+            }
+            frame.dispose();
+
+        });
 
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,14 +62,18 @@ public class GUI implements ActionListener {
         frame.setVisible(true);
 
     }
+
     public static void main(String[] args) {
-        new GUI();
+        askForFace("C:\\Users\\Asus\\Desktop\\CDLE project data\\output");
     }
+
+    public static JFrame getFrame(){
+        return frame;
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.exit(0);
+
     }
-
-
 }

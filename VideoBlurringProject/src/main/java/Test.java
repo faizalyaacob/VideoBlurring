@@ -1,32 +1,30 @@
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DoublePoint;
-import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
+import org.nd4j.linalg.io.ClassPathResource;
 
-import org.apache.commons.math3.ml.distance.EuclideanDistance;
-import org.bytedeco.opencv.global.opencv_highgui;
-import org.bytedeco.opencv.opencv_core.Mat;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
-import static org.bytedeco.opencv.global.opencv_highgui.destroyAllWindows;
 import static org.bytedeco.opencv.global.opencv_highgui.waitKey;
 
 
 public class Test {
     public static void main(String[] args) throws Exception {
-
+        FileChooser fc = new FileChooser();
+        String inputVideoPath = fc.getSourceFolder();
+        final String saveloc = new ClassPathResource("tempImage").getFile().getAbsolutePath();
         System.out.println("------------------------------------");
         System.out.println("----------BlurMe Beta v1.0----------");
         System.out.println("\033[3m          We anonymize you          \033[0m");
         System.out.println("------------------------------------");
         //Deletes all previous images inside folder
-        String imagePath = "E:\\Java Projects\\output";
-        File folder = new File(imagePath);
+        File folder = new File(saveloc);
         File[] files = folder.listFiles();
         if(files!=null) { //some JVMs return null for empty dirs
             for(File f: files) {
@@ -38,8 +36,7 @@ public class Test {
         VideoReader vr = new VideoReader();
         DBScan dbScan = new DBScan();
         System.out.println("Start Encoding...");
-        String path = "C:\\Users\\scotg\\Downloads\\Video\\WhatsApp.mp4";
-        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace(path);
+        HashMap<double[], HashMap<Long,int[]>> out = vr.detectAndEncodeFace(inputVideoPath);
         List<double[]> embs = new ArrayList<>(out.keySet());
         List<DoublePoint> points = new ArrayList<>();
         for( double[] emb: embs){
@@ -64,34 +61,26 @@ public class Test {
 //            System.out.println(pt.getPoint().length);
 //            System.out.println(pt);
 //        }
+//
+//        System.out.println("No.of Faces Detected: "+map.keySet().size());
+//        System.out.println("The system will show the faces detected in a separate window.");
+//        System.out.println("[IMPORTANT] Notice the face number. Eg: face-0");
 
-        System.out.println("No.of Faces Detected: "+map.keySet().size());
-        System.out.println("The system will show the faces detected in a separate window.");
-        System.out.println("[IMPORTANT] Notice the face number. Eg: face-0");
-        String saveloc = "E:\\Java Projects\\output\\";
+        HashMap<String, double[]> detectedEmb = vr.extractImageDetected(map,out, inputVideoPath,saveloc);
 
-        HashMap<String, double[]> detectedEmb = vr.extractImageDetected(map,out,path,saveloc);
-
+        GUI.askForFace(saveloc);
+//        Object obj = new Object();
+        while(GUI.getFrame().isVisible()){
+            TimeUnit.SECONDS.sleep(1);
+        }
+//        System.out.println("ppppp");
+//
         File imageFolder = new File(saveloc);
         String[] listofFiles = imageFolder.list();
 
-        for(String image: listofFiles){
-            String imageName = saveloc + "\\" + image;
-            Mat imageMat = imread(imageName);
-            opencv_highgui.imshow(imageName,imageMat);
-            if (waitKey(0) == 27) {
-                destroyAllWindows();
-            }
-        }
-
-        List<String> facelist = new ArrayList<>();
-        while(true) {
-            Scanner sc = new Scanner(System.in);
-            System.out.println("Please select the face that you need...");
-            System.out.println(detectedEmb.keySet());
-            String selection = sc.nextLine(); // User inputs either 1/2/3
-            if (selection.equals("done")){break;}
-            facelist.add("face-" + selection);
+        List<String> facelist =new ArrayList<>();
+        for (String f : listofFiles){
+            facelist.add(f.substring(0,f.length()-4));
         }
 
         //Extract
@@ -103,9 +92,18 @@ public class Test {
         //Video blurring and video write (Output video: "/output.mp4")
         VideoBlurring vb = new VideoBlurring();
         HashMap<Long, List<int[]>> generateTimeLocs = vb.generateTimeLocs(embToBlur,out);
-        vb.BlurringAndGenerateVideo(path,generateTimeLocs);
+        vb.BlurringAndGenerateVideo(inputVideoPath,generateTimeLocs);
 
         System.out.println("\n\n Blurring completed! Programme exiting...");
+
+        //Deletes all previous images inside folder
+        folder = new File(saveloc);
+        files = folder.listFiles();
+        if(files!=null) { //some JVMs return null for empty dirs
+            for(File f: files) {
+                f.delete();
+            }
+        }
 
     }
 }
