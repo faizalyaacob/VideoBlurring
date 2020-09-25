@@ -7,13 +7,17 @@ public class GetSelectedFaces {
 
 
         List<double[]> selectedFaceEmb = new ArrayList<>();
-        for(String names: detectedEmb.keySet()){
-            for(int i=0;i<facelist.size();i++){
-                if(names.equals(facelist.get(i))){
-                    selectedFaceEmb.add(detectedEmb.get(names));
+        for(String names: facelist){
+            System.out.println(names);
+            for(String nameMap: detectedEmb.keySet()){
+                System.out.println(nameMap);
+                System.out.println(nameMap.equals(names));
+                if (nameMap.equals(names)){
+                    selectedFaceEmb.add(detectedEmb.get(nameMap));
                 }
             }
         }
+        System.out.println(selectedFaceEmb.size());
         return selectedFaceEmb;
     }
 }

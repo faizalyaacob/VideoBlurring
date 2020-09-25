@@ -19,6 +19,10 @@ public class compare {
                     embToBlur.add(faceDouble);
                 }
             }
+            else{
+                System.out.println(embCluster.get(emb).size());
+
+            }
         }
 
         return embToBlur;

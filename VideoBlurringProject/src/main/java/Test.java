@@ -49,7 +49,7 @@ public class Test {
         System.out.println("\n\nStarted Clustering...");
         // pass video 2 short,video 1 short 2 scot, fail video3 0 output fast moving
         // fail on long vid 3 no faizal, pass long vid 1, video 2 no zufar
-        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.08,10, new EuclideanDistance());
+        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.1,1, new CosineSim());// pass all!! better
         // pass video 2 long 2 peh, pass video 1 long 2 scott,fail video 3 2 peh no faizal no zufar
 //        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.06,10, new CosineSim());
         // pass video 3 long 3 peh, pass video 2 2 zufar 2 sum,pass video 1 2 shamala
@@ -85,11 +85,14 @@ public class Test {
         }
 
         List<String> facelist = new ArrayList<>();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n\n-----[IMPORTANT] Please select the face number that you need...-----");
-        System.out.println(detectedEmb.keySet());
-        String selection = sc.nextLine(); // User inputs either 1/2/3
-        facelist.add("face-"+selection+".jpg");
+        while(true) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Please select the face that you need...");
+            System.out.println(detectedEmb.keySet());
+            String selection = sc.nextLine(); // User inputs either 1/2/3
+            if (selection.equals("done")){break;}
+            facelist.add("face-" + selection);
+        }
 
         //Extract
         List<double[]> getSelectedFaces = GetSelectedFaces.getSelectedFaces(detectedEmb,facelist);
