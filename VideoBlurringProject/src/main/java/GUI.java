@@ -14,33 +14,29 @@ public class GUI implements ActionListener {
     int count = 0;
     private static JLabel label;
     private static JFrame frame;
-    private static JPanel panel;
-    private static String path;
-    private static File imageFolder;
-    private static String[] listOfFiles;
-    private static java.util.List<String> fileList;
     private static HashMap<String,JCheckBox> boxToFile;
+    private static HashMap<String,JLabel> fileLabels;
 
 
     public static void askForFace(String imgFile){
-        fileList = new ArrayList<>();
         boxToFile = new HashMap<>();
-        path = imgFile;
-        imageFolder = new File(path);
-        listOfFiles = imageFolder.list();
+        fileLabels = new HashMap<>();
+        File imageFolder = new File(imgFile);
+        String[] listOfFiles = imageFolder.list();
 
         frame = new JFrame();
         JButton button = new JButton("OK");
 
-        panel = new JPanel();
+        JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(30,30,10,30));
-        panel.add(new JLabel("PICK THE FACES NOT TO BLUR"));
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0,8,5,10));
 
         for(String image: listOfFiles){
-            String imageName = path + "\\" + image;
+            String imageName = imgFile + "\\" + image;
             boxToFile.put(imageName,new JCheckBox());
-            panel.add( new JLabel("face",new ImageIcon(imageName),SwingConstants.LEFT));
+            fileLabels.put(imageName,new JLabel(new ImageIcon(imageName),SwingConstants.LEFT));
+            fileLabels.get(imageName).setSize(50,50);
+            panel.add(fileLabels.get(imageName));
             panel.add( boxToFile.get(imageName));
         }
         panel.add(button);
@@ -57,7 +53,7 @@ public class GUI implements ActionListener {
 
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("List of faces");
+        frame.setTitle("Pick the face not to blur...");
         frame.pack();
         frame.setVisible(true);
 
