@@ -8,9 +8,10 @@ This programme takes an .mp4 video as an input. The user then selects the faces 
 1. Download the whole folder.   
 2. Import pom.xml as project in IntelliJ.
 3. It will take some time for the dependencies to be resolved (-_- stay patient..)
-4. Once the dependencies are resolved, open the Test.java file and modify the vid path to a .mp4 video in your local machine.
-5. Run the Test.java file. Pick the face to not get blurred and let the programme run.
-6. Video with the title "output.mp4" will be generated in the root directory.
+4. Once the dependencies are resolved, open the Test.java file and run.
+5. File chooser will pop out and choose the mp4 video you would like to edit.
+6. After processing, user selection window will pop out, choose the face you would not like to blue out.(one face might appear multiple times, please pick all...)
+7. Video with the title "output.mp4" will be generated in the root directory.
 ---
 
 ## Deep Learning Applications
