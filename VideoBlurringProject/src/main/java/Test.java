@@ -18,7 +18,12 @@ public class Test {
     public static void main(String[] args) throws Exception {
         FileChooser fc = new FileChooser();
         String inputVideoPath = fc.getSourceFolder();
-        final String saveloc = new ClassPathResource("tempImage").getFile().getAbsolutePath();
+        File CPR = new File("tempImage");
+        System.out.println(CPR.exists());
+        if( !CPR.exists()){
+            CPR.mkdir();
+        }
+        final String saveloc = CPR.getAbsolutePath();
         System.out.println("------------------------------------");
         System.out.println("----------BlurMe Beta v1.0----------");
         System.out.println("\033[3m          We anonymize you          \033[0m");
@@ -46,7 +51,7 @@ public class Test {
         System.out.println("\n\nStarted Clustering...");
         // pass video 2 short,video 1 short 2 scot, fail video3 0 output fast moving
         // fail on long vid 3 no faizal, pass long vid 1, video 2 no zufar
-        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.14,1, new CosineSim());// pass all!! better
+        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.1,1, new CosineSim());// pass all!! better
         // pass video 2 long 2 peh, pass video 1 long 2 scott,fail video 3 2 peh no faizal no zufar
 //        List<Cluster<DoublePoint>> clusters = dbScan.getClusters(points,0.06,10, new CosineSim());
         // pass video 3 long 3 peh, pass video 2 2 zufar 2 sum,pass video 1 2 shamala
